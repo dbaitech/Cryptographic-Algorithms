@@ -13,8 +13,7 @@ class Client:
         self.query = None
         self.enc_query = None
         self.db_response = None
-        self.decrypted_db_response = None
-        self.queried_element = None
+        self.decrypted_element = None
 
     def generate_encrypted_query(self, row: int, col: int):
         self.__set_query_coordinates(row, col)
@@ -27,11 +26,10 @@ class Client:
 
     def receive_db_response(self, response):
         self.db_response = response
-        decrypted_response = np.zeros(self.db_num_rows)
-        for i, row in enumerate(self.db_response):
-            decrypted_response[i] = self.lwe.decrypt(row, self.secret_key)
-        self.decrypted_db_response = decrypted_response
-        return self.__get_queried_element()
+        row_response = self.db_response[self.row]  # get only desired row
+        decrypted_response = self.lwe.decrypt(row_response, self.secret_key)
+        self.decrypted_element = decrypted_response
+        return self.decrypted_element
 
     def __set_query_coordinates(self, row, col):
         self.row = row
@@ -41,9 +39,4 @@ class Client:
         query_vector = np.zeros(self.db_num_cols)
         query_vector[self.col] = 1
         self.query = query_vector
-
-    def __get_queried_element(self):
-        self.queried_element = self.decrypted_db_response[self.row]
-        return int(self.queried_element)
-
 
