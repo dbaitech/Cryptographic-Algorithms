@@ -7,7 +7,7 @@ Contains the client functionalities to generate an encrypted query and decrypt t
 2. An encrypted query is then generated based on the secret key and the desired row and column to be queried from the database (assumes a 2D database of size $\sqrt n$ x $\sqrt n$).
    - The client first generates a vector $v$ of size $\sqrt n$ where each element corresponds to a column in the database.
    - $v$ is filled with zeros except at the index corresponding column being queried which contains a 1: $(0, \ldots, 1,\ldots, 0)$
-   - $v$ is then encrypted according to the Secret-key Regev encryption scheme in lwe.py: $(0, \ldots, 1,\ldots, 0) \rightarrow ((a_1, c_1), \ldots, (a_i, c_i),\ldots, (a_{\sqrt{n}}, c_{\sqrt{n}}))$
+   - $v$ is then encrypted according to the Secret-key Regev encryption scheme in lwe.py: $(0, \ldots, 1,\ldots, 0) \rightarrow \Big ((a_1, c_1), \ldots, (a_i, c_i),\ldots, (a_{\sqrt{n}}, c_{\sqrt{n}}) \Big )$
 4. The server responds with $\sqrt n$ values (1 per row). Because the client knows what row it wants to query, it selects the value of the desired row which contains the encrypted value of the column in the database.
 6. The client then decrypts this value to get the true value situated at the desired row and column.
 
@@ -23,7 +23,7 @@ Simple and Fast Single-Server Private Information Retrieval*, https://eprint.iac
 As described in the **Secret-key Regev encryption** scheme, a secret key $s$ is generated as a vector $\in \mathbb{Z}^n_q$ where each component is chosen randomly from the uniform distribution. $s$ is then used to encrypt the plaintext $m \in \mathbb{Z}_p$ as follows:
 $$encrypt(m, s) = (a, a^Ts + e + \lfloor\frac{q}{p}\rfloor \cdot m) = (a, c)$$ where $a$ is a randomly chosen vector $\in \mathbb{Z}^n_q$, $e$ is a small number chosen from $\chi$ (a Normal distribution with special constraints), $p$ is the plaintext modulus, $q$ is the ciphertext modulus and $n$ is the dimension of the secret key.
 
-The client then uses this encrypt function to generate its encrypted query which will have the structure $((a_1, c_1), \ldots, (a_d, c_d))$ where $d$ is the number of columns in the database ($\sqrt n$).
+The client then uses this encrypt function to generate its encrypted query which will have the structure $\Big ((a_1, c_1), \ldots, (a_d, c_d) \Big)$ where $d$ is the number of columns in the database ($\sqrt n$).
 
 ### decryption
 Given $(a, c)$ as the ciphertext, the decryption to get the plaintext $m$ is quite simple: $c - a^Ts \mod q$ which is rounded to the nearest multiple of $\lfloor\frac{q}{p}\rfloor$. So, it is essentially: $$m = round(\frac{c - a^Ts \mod q}{\lfloor\frac{q}{p}\rfloor})$$
