@@ -26,6 +26,12 @@ class ElGamal:
             c2 = (message * shared_secret) % q
         return c1, c2
 
+    @staticmethod
+    def add(q, ciphertext1, ciphertext2):
+        c1, c2 = ciphertext1
+        d1, d2 = ciphertext2
+        return (c1 * d1) % q, (c2 * d2) % q
+
     def decrypt(self, ciphertext, private_key, exponential=True):
         c1, c2 = ciphertext
         shared_secret = pow(c1, -1 * private_key, self.q)
