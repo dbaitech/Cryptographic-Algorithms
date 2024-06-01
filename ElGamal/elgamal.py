@@ -2,18 +2,6 @@ import random
 import math
 
 
-def encrypt(message, public_key, y, exponential=False):
-    g, q, h = public_key
-    assert 1 <= y <= q - 1
-    shared_secret = pow(h, y, q)
-    c1 = pow(g, y, q)
-    if exponential:
-        c2 = (pow(g, message, q) * shared_secret) % q
-    else:
-        c2 = (message * shared_secret) % q
-    return c1, c2
-
-
 class ElGamal:
     def __init__(self, g, q):
         self.g = g  # generator
@@ -25,6 +13,18 @@ class ElGamal:
 
     def generate_private_key(self):
         return random.randint(1, self.q)
+
+    @staticmethod
+    def encrypt(message, public_key, y, exponential=False):
+        g, q, h = public_key
+        assert 1 <= y <= q - 1
+        shared_secret = pow(h, y, q)
+        c1 = pow(g, y, q)
+        if exponential:
+            c2 = (pow(g, message, q) * shared_secret) % q
+        else:
+            c2 = (message * shared_secret) % q
+        return c1, c2
 
     def decrypt(self, ciphertext, private_key, exponential=True):
         c1, c2 = ciphertext
