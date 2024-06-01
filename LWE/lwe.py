@@ -25,11 +25,13 @@ class LWESecretKey:
         base = math.floor(self.q / self.p)  # round to the nearest multiple of floor(q/p)
         return (round(difference / base)) % self.p
 
-    def add(self, c1, c2):
-        return np.add(c1[0], c2[0]) % self.q, (c1[1] + c2[1]) % self.q
+    @staticmethod
+    def add(q, c1, c2):
+        return np.add(c1[0], c2[0]) % q, (c1[1] + c2[1]) % q
 
-    def multiply_scalar(self, scalar, c):
-        return (scalar * c[0]) % self.q, (scalar * c[1]) % self.q
+    @staticmethod
+    def multiply_scalar(q, scalar, c):
+        return (scalar * c[0]) % q, (scalar * c[1]) % q
 
     def __get_random_int(self, max):
         return int(random.randrange(max))
