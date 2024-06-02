@@ -27,16 +27,21 @@ def main():
     exp_message_1 = g**285 % q
     exp_message_2 = g**215 % q
 
-    exp_ciphertext_1 = ElGamal.encrypt(exp_message_1, public_key, y)
-    exp_ciphertext_2 = ElGamal.encrypt(exp_message_2, public_key, y)
+    # exp_ciphertext_1 = ElGamal.encrypt(exp_message_1, public_key, y)
+    # exp_ciphertext_2 = ElGamal.encrypt(exp_message_2, public_key, y)
+
+    exp_ciphertext_1 = ElGamal.encrypt(m_1, public_key, y, exponential=True)
+    exp_ciphertext_2 = ElGamal.encrypt(m_2, public_key, y, exponential=True)
 
     added_ciphertexts = ElGamal.add(q, exp_ciphertext_1, exp_ciphertext_2)
-    decrypt_added_ciphertexts = elgamal_client.decrypt(added_ciphertexts, private_key)
+    decrypt_added_ciphertexts = elgamal_client.decrypt(added_ciphertexts, private_key, exponential=True)
 
+    print(f'Message 1: {exp_message_1}, Message 2: {exp_message_2}, '
+          f'Encrypted Message 1: {exp_ciphertext_1}, Encrypted Message 2: {exp_ciphertext_2}, '
+          f'Added encrypted Messages: {added_ciphertexts}, '
+          f'Decrypted Added Messages: {decrypt_added_ciphertexts}')
     assert decrypt_added_ciphertexts == exp_m_sum
 
-    print(f'Message 1: {exp_message_1}, Message 2: {exp_message_2}, Added exp messages: {exp_m_sum}, '
-          f'Decrypted exp Message: {decrypt_added_ciphertexts}')
 
     # exp_decrypted_message_1 = elgamal_client.decrypt(exp_ciphertext_1, private_key)
     # exp_decrypted_message_2 = elgamal_client.decrypt(exp_ciphertext_2, private_key)
