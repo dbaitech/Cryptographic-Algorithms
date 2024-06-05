@@ -1,4 +1,5 @@
 This repository contains the files to implement:
+- SimplePIR (https://eprint.iacr.org/2022/949.pdf)
 - ElGamal encryption scheme
 - Private Information Retrieval using the **Secret-key Regev encryption (LWE)** and **Kushilevitz and Ostrovsky method** described in the paper *Replication is not needed: single database, computationally-private information retrieval* (https://dl.acm.org/doi/10.5555/795663.796363)
 
@@ -7,7 +8,7 @@ This repository contains the files to implement:
 2. [LWE](#lwe) 
 
 ## ElGamal
-Contains elgamal.py which encompasses generation of private and public keys as well as encryption and decryption. Homomorphic addition and multiplication are coming soon...
+Contains elgamal.py which encompasses generation of private and public keys as well as encryption and decryption, homomorphic addition and multiplication by a scalar (exponential ElGamal scheme) and homomorphic multiplication (ElGamal).
 The main.py presents an example of its use.
 
 ## LWE
