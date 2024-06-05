@@ -33,14 +33,11 @@ class LWESecretKey:
     def multiply_scalar(q, scalar, c):
         return (scalar * c[0]) % q, (scalar * c[1]) % q
 
-    def __get_random_int(self, max):
-        return int(random.randrange(max))
-
     def __get_error(self):
         return int(random.randrange(-32, 32))
 
     def __get_random_vector(self):
         s = np.array([])
         for i in range(self.n):
-            s = np.append(s, self.__get_random_int(self.q))
+            s = np.append(s, random.randint(0, self.q - 1))
         return s
