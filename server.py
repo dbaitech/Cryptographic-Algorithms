@@ -28,17 +28,13 @@ class Server:
         slim_response = np.empty(response.shape, dtype=tuple)
 
         for i, (a, c) in enumerate(response):
-            y_1 = random.randint(1, self.elgamal.q - 1)
-            enc_c = self.elgamal.encrypt(int(c), elg_public_key, y_1)
-
-            y_2 = random.randint(1, self.elgamal.q - 1)
-            sum_a_j_s_j = self.elgamal.encrypt(0, elg_public_key, y_2) # set it to 0 in ElGamal
+            y = random.randint(1, self.elgamal.q - 1)
+            sum_a_j_s_j = self.elgamal.encrypt(int(c), elg_public_key, y)
 
             for a_j, s_j in zip(a, elg_wrapped_lwe_secret_key):
-                sum_a_j_s_j = self.elgamal.add(sum_a_j_s_j,
-                                               self.elgamal.multiply_by_scalar(int(a_j), s_j))  # sum(q - a_i, s_i)
+                a_j_s_j_product = self.elgamal.multiply_by_scalar((self.elgamal.q - int(a_j)), s_j)
+                sum_a_j_s_j = self.elgamal.add(sum_a_j_s_j, a_j_s_j_product)
 
-            slim_response[i] = self.elgamal.add(enc_c,
-                                                self.elgamal.multiply_by_scalar(-1, sum_a_j_s_j))  # c + sum(q - a_i, s_i)
+            slim_response[i] = sum_a_j_s_j
         self.slim_response = slim_response
         return slim_response

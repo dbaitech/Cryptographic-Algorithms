@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import random
 from LWE.lwe import LWESecretKey
@@ -5,7 +7,7 @@ from ElGamal.elgamal import ElGamal
 
 
 class Client:
-    def __init__(self, db_num_rows: int, db_num_cols: int, p=2, lwe_q=2 ** 32, n=840, g=7, elgamal_q=2083):
+    def __init__(self, db_num_rows: int, db_num_cols: int, p, lwe_q=2 ** 32, n=840, g=7, elgamal_q=2083):
         self.db_num_rows = db_num_rows
         self.db_num_cols = db_num_cols
         self.lwe = LWESecretKey(p, lwe_q, n)
@@ -32,7 +34,7 @@ class Client:
         for i, s_i in enumerate(self.lwe_secret_key):
             y = random.randint(1, self.elgamal.q - 1)
             elg_wrapped_lwe_key[i] = self.elgamal.encrypt(int(s_i), self.elgamal_public_key, y)
-            assert (s_i % self.elgamal.q) == self.elgamal.decrypt(elg_wrapped_lwe_key[i], self.elgamal_private_key)
+            assert (s_i % (self.elgamal.q - 1)) == self.elgamal.decrypt(elg_wrapped_lwe_key[i], self.elgamal_private_key)
         self.elg_wrapped_lwe_key = elg_wrapped_lwe_key
         return self.elg_wrapped_lwe_key
 
@@ -40,8 +42,9 @@ class Client:
         self.db_response = response
         row_response = self.db_response[self.row]  # get only desired row
         # decrypted_response = self.lwe.decrypt(row_response, self.lwe_secret_key)
-        decrypted_response = self.elgamal.decrypt(row_response, self.elgamal_private_key) % self.lwe.p
-        self.decrypted_element = decrypted_response
+        decrypted_response = self.elgamal.decrypt(row_response, self.elgamal_private_key)
+        base = math.floor(self.elgamal.q / self.lwe.p)  # round to the nearest multiple of floor(q/p)
+        self.decrypted_element = (round(decrypted_response / base)) % self.lwe.p
         return self.decrypted_element
 
     def __set_query_coordinates(self, row, col):

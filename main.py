@@ -1,12 +1,12 @@
-import client as client
-import server as server
+import client
+import server
 import numpy as np
 
 
 def main():
     p = 26  # plaintext modulus
     lwe_q = 2 ** 32  # ciphertext modulus
-    lwe_n = 2  # dimension of secret key
+    lwe_n = 2  # 840 # dimension of secret key
     elgamal_g = 7
     elgamal_q = 2083
     num_rows = 5
@@ -17,7 +17,7 @@ def main():
                          [16, 17, 18, 19, 20],
                          [21, 22, 23, 24, 25]])
     svr = server.Server(database, num_rows, num_cols, lwe_q, elgamal_g, elgamal_q)
-    cl = client.Client(num_rows, num_cols, p, lwe_q, lwe_n)
+    cl = client.Client(num_rows, num_cols, p, lwe_q, lwe_n, elgamal_g, elgamal_q)
 
     # querying element
     query_row = 4
